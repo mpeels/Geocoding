@@ -1,25 +1,29 @@
 package com.example.Geocoder;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import reactor.core.publisher.Mono;
+import org.springframework.http.ResponseEntity;
 
-import java.util.Map;
-import java.util.HashMap;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
+@RequestMapping("api/address")
 class GeocoderController{
-    @GetMapping("/geocoder")
-    public Result getGeocode(){
-        Result result = new Result("Hello World", true, "Delievered");
-        return result;
+    private final CensusService censusService;
+
+    @Autowired
+    public GeocoderController(CensusService censusService){
+        this.censusService = censusService;
     }
 
-    @GetMapping("/geocoderMap")
-    public Map<String, String> getGeocodeMap(){
-        Map<String, String> result = new HashMap<>();
-        result.put("response", "Hello World");
-        result.put("status", "true");
-        return result;
+    @PostMapping
+    public Mono<ResponseEntity<String>> fixedAddress(){
+        return censusService.returnAddress()
+            .map(response -> ResponseEntity.ok(response))
+            .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Address not found"));
     }
 }
