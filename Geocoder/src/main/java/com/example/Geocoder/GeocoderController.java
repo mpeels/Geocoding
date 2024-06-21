@@ -22,10 +22,10 @@ class GeocoderController{
         this.censusService = censusService;
     }
 
-    //ReqeustBody deserializes the JSON mapping the request body to an Address object (https://www.baeldung.com/spring-request-response-body)
-    //A ResponseEntity represents the HTTP Response, allowing for the status code, headers and body to be set manually (https://www.baeldung.com/spring-response-entity)
+    
     
     // The response from the API call is processed and formatted into before being returned to the user. 
+    // Return response object
     @PostMapping
     public Mono<ResponseEntity<String>> submitAddress(@RequestBody Address address){
         return censusService.submitAddress(address)
@@ -37,13 +37,13 @@ class GeocoderController{
                         .getJSONArray("addressMatches")
                         .getJSONObject(0);
                     
-                    
-                    String matchedAddress = addressMatches.getString("matchedAddress");
-                    double x = addressMatches.getJSONObject("coordinates").getDouble("x");
-                    double y = addressMatches.getJSONObject("coordinates").getDouble("y");
+                    Response formattedResponse = new Response(
+                        addressMatches.getString("matchedAddress"), 
+                        addressMatches.getJSONObject("coordinates").getDouble("x"), 
+                        addressMatches.getJSONObject("coordinates").getDouble("y"));
 
                     return Mono.just(new ResponseEntity<>("Verified Address:\n" + 
-                        matchedAddress + "\ncoordinates: \n" + x + ", " + y, HttpStatus.OK));
+                        formattedResponse.matchedAddress() + "\ncoordinates: \n" + formattedResponse.x() + ", " + formattedResponse.y(), HttpStatus.OK));
                 } catch (JSONException e) {
                     return Mono.just(new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
                 }
