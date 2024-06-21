@@ -9,18 +9,29 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * The service layer for the Geocoder application. This class is responsible for
+ * making requests to the US Census Geocoder API and returning the response as JSON.
+ * 
+ * <p> Use Case: Validate an American address as well as return longitude and latitude<p>
+ * <p> Return: JSON response from US Census API<p>
+ * @author Jabir Emeka
+ * @version 1.0
+ * @param address
+ */
+
 @Service
 public class CensusService {
 
     private final WebClient webClient;
     private final DefaultUriBuilderFactory uriBuilderFactory;
 
-    //https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.pdf
-    //https://www.baeldung.com/spring-autowire
+    // https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.pdf
+    // https://www.baeldung.com/spring-autowire
 
     @Autowired //injecting the WebClient.Builder
     public CensusService(WebClient.Builder webClientBuilder){
-        this.uriBuilderFactory = new DefaultUriBuilderFactory("https://geocoding.geo.census.gov");
+        this.uriBuilderFactory = new DefaultUriBuilderFactory("https://geocoding.geo.census.gov/geocoder/locations/address");
         this.webClient = webClientBuilder.uriBuilderFactory(uriBuilderFactory).build();
     }
 
@@ -34,7 +45,6 @@ public class CensusService {
         //Allows the creation of UriBuilder instances with a common base URL
         //I choose not to use UriComponentsBuilder because I am working with a base URL being the Census API.
         URI uri = uriBuilderFactory.builder()
-            .path("/geocoder/locations/address")
             .queryParam("street", address.street())
             .queryParam("city", address.city())
             .queryParam("state", address.state())
