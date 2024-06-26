@@ -18,10 +18,11 @@ CensusService.java:
 
 GeocoderController.java:
 
-    Run Process: Start project from terminal with './gradlw bootRun' while in directory or run from GecoderApplication
+    Run Process: Start project from terminal with './gradlw bootRun' while in directory or 
+    run from GecoderApplication
 
-    Initializes the Census Service and takes the users address input before making a call to the US Census API
-    and returning a response. 
+    Initializes the Census Service and takes the users address input before making a call to 
+    the US Census API and returning a response. 
 
 
 Resources:
