@@ -3,10 +3,9 @@ package com.example.Geocoder.services;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.example.Geocoder.requests.AddressRequest;
 import com.example.Geocoder.responses.AddressMatchResponse;
 import com.example.Geocoder.responses.CensusApiResponse;
-
+import com.example.Geocoder.requests.AddressRequest;
 
 /**
  * The service layer for the Geocoder application. This class is responsible for
