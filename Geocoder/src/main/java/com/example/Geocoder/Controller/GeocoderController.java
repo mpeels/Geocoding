@@ -1,13 +1,13 @@
-package com.example.Geocoder.Controller;
+package com.example.Geocoder.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Geocoder.Requests.AddressRequest;
-import com.example.Geocoder.Service.CensusApiResponse;
-import com.example.Geocoder.Service.CensusApiService;
+import com.example.Geocoder.requests.AddressRequest;
+import com.example.Geocoder.services.CensusApiService;
+import com.example.Geocoder.responses.CensusApiResponse;
 
 
 /**

@@ -1,9 +1,11 @@
-package com.example.Geocoder.Service;
+package com.example.Geocoder.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.example.Geocoder.Requests.AddressRequest;
+import com.example.Geocoder.requests.AddressRequest;
+import com.example.Geocoder.responses.AddressMatchResponse;
+import com.example.Geocoder.responses.CensusApiResponse;
 
 
 /**
@@ -41,7 +43,7 @@ public class CensusApiService {
             .body(CensusApiResponse.class);
 
         if(response.result().addressMatches().isEmpty()){
-            response.result().addressMatches().add( new AddressMatch("Address not found"));
+            response.result().addressMatches().add( new AddressMatchResponse("Address not found"));
         }
 
         return response;
