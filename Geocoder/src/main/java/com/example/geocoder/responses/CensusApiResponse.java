@@ -1,8 +1,4 @@
-package com.example.Geocoder.responses;
+package com.example.geocoder.responses;
 
-public record CensusApiResponse(ResultResponse result) {}
-
-
-
-
-
+public record CensusApiResponse(ResultResponse result) {
+}

@@ -1,4 +1,4 @@
-package com.example.Geocoder.censusservicetest;
+package com.example.geocoder.censusservicetest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,108 +12,110 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestClient;
 
-import com.example.Geocoder.requests.AddressRequest;
-import com.example.Geocoder.responses.AddressMatchResponse;
-import com.example.Geocoder.responses.CensusApiResponse;
-import com.example.Geocoder.responses.CoordinatesResponse;
-import com.example.Geocoder.responses.ResultResponse;
-import com.example.Geocoder.services.CensusApiService;
+import com.example.geocoder.request.AddressRequest;
+import com.example.geocoder.responses.AddressMatchResponse;
+import com.example.geocoder.responses.CensusApiResponse;
+import com.example.geocoder.responses.CoordinatesResponse;
+import com.example.geocoder.responses.ResultResponse;
+import com.example.geocoder.services.CensusApiService;
 
 @ExtendWith(MockitoExtension.class)
 public class CensusServiceTests {
-    @Mock
-    private RestClient mockClient;
-    
-    @InjectMocks
-    private CensusApiService censusApiService;
-    
-    @Test
-    void submitAddressInvalidRequest(){ 
-        AddressRequest invalidRequest = new AddressRequest("Invalid", "Nowhere", "Don't", "Exist");
+  @Mock
+  private RestClient mockClient;
 
-        AddressMatchResponse expectedAddressMatch = new AddressMatchResponse("Address Not Found");
-        ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
-        CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
-        
-        RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
-        when(mockClient.get()).thenReturn(mockUriSpec);
+  @InjectMocks
+  private CensusApiService censusApiService;
 
-        RestClient.RequestHeadersSpec mockHeadersSpec = mock(RestClient.RequestHeadersSpec.class);
-        when(mockUriSpec.uri("?street={street}&city={city}&state={state}&zip={zip}&benchmark=Public_AR_Current&format=json", 
-                invalidRequest.street(), 
-                invalidRequest.city(), 
-                invalidRequest.state(), 
-                invalidRequest.zip())).thenReturn(mockHeadersSpec);
+  @Test
+  void submitAddressInvalidRequest() {
+    AddressRequest invalidRequest = new AddressRequest("Invalid", "Nowhere", "Don't", "Exist");
 
-        RestClient.ResponseSpec mockResponseSpec = mock(RestClient.ResponseSpec.class);
-        when(mockHeadersSpec.retrieve()).thenReturn(mockResponseSpec);
+    AddressMatchResponse expectedAddressMatch = new AddressMatchResponse("Address Not Found");
+    ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
+    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
 
-        when(mockResponseSpec.onStatus(any(), any())).thenReturn(mockResponseSpec);
+    RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
+    when(mockClient.get()).thenReturn(mockUriSpec);
 
-        when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
-        
-        CensusApiResponse actualResponse = censusApiService.submitAddress(invalidRequest);
+    RestClient.RequestHeadersSpec mockHeadersSpec = mock(RestClient.RequestHeadersSpec.class);
+    when(mockUriSpec.uri("?street={street}&city={city}&state={state}&zip={zip}&benchmark=Public_AR_Current&format=json",
+        invalidRequest.street(),
+        invalidRequest.city(),
+        invalidRequest.state(),
+        invalidRequest.zip())).thenReturn(mockHeadersSpec);
 
-        assertEquals(expectedResponse, actualResponse);
-    }   
+    RestClient.ResponseSpec mockResponseSpec = mock(RestClient.ResponseSpec.class);
+    when(mockHeadersSpec.retrieve()).thenReturn(mockResponseSpec);
 
-    @Test
-    void submitAddressSuccessfulReqeuest(){
-        AddressRequest successfulRequest = new AddressRequest("20 W 34th St.", "New York", "New York", "10001" );
+    when(mockResponseSpec.onStatus(any(), any())).thenReturn(mockResponseSpec);
 
-        CoordinatesResponse coordinates = new CoordinatesResponse(-73.98524258380219, 40.74865337901453);
-        AddressMatchResponse expectedAddressMatch = new AddressMatchResponse("20 W 34TH ST, NEW YORK, NY, 10118", coordinates);
-        ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
-        CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
+    when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
 
-        RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
-        when(mockClient.get()).thenReturn(mockUriSpec);
+    CensusApiResponse actualResponse = censusApiService.submitAddress(invalidRequest);
 
-        RestClient.RequestHeadersSpec mockHeadersSpec = mock(RestClient.RequestHeadersSpec.class);
-        when(mockUriSpec.uri("?street={street}&city={city}&state={state}&zip={zip}&benchmark=Public_AR_Current&format=json", 
-                successfulRequest.street(), 
-                successfulRequest.city(), 
-                successfulRequest.state(), 
-                successfulRequest.zip())).thenReturn(mockHeadersSpec);
+    assertEquals(expectedResponse, actualResponse);
+  }
 
-        RestClient.ResponseSpec mockResponseSpec = mock(RestClient.ResponseSpec.class);
-        when(mockHeadersSpec.retrieve()).thenReturn(mockResponseSpec);
+  @Test
+  void submitAddressSuccessfulReqeuest() {
+    AddressRequest successfulRequest = new AddressRequest("20 W 34th St.", "New York", "New York", "10001");
 
-        when(mockResponseSpec.onStatus(any(), any())).thenReturn(mockResponseSpec);
+    CoordinatesResponse coordinates = new CoordinatesResponse(-73.98524258380219, 40.74865337901453);
+    AddressMatchResponse expectedAddressMatch = new AddressMatchResponse("20 W 34TH ST, NEW YORK, NY, 10118",
+        coordinates);
+    ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
+    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
 
-        when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
-    
-        CensusApiResponse actualResponse = censusApiService.submitAddress(successfulRequest);
+    RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
+    when(mockClient.get()).thenReturn(mockUriSpec);
 
-        assertEquals(expectedResponse, actualResponse);
-    }
+    RestClient.RequestHeadersSpec mockHeadersSpec = mock(RestClient.RequestHeadersSpec.class);
+    when(mockUriSpec.uri("?street={street}&city={city}&state={state}&zip={zip}&benchmark=Public_AR_Current&format=json",
+        successfulRequest.street(),
+        successfulRequest.city(),
+        successfulRequest.state(),
+        successfulRequest.zip())).thenReturn(mockHeadersSpec);
 
-    @Test
-    void missingParamRequestTest(){
-        AddressRequest addressRequest = new AddressRequest("", "New York", "New York", "10001" );
-        AddressMatchResponse expectedAddressMatch = new AddressMatchResponse("400 BAD_REQUEST: Street address cannot be empty and cannot exceed 100 characters, Specify House number and Street name along with City and State and/or ZIP Code");
-        ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
-        CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
-        
-        RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
-        when(mockClient.get()).thenReturn(mockUriSpec);
+    RestClient.ResponseSpec mockResponseSpec = mock(RestClient.ResponseSpec.class);
+    when(mockHeadersSpec.retrieve()).thenReturn(mockResponseSpec);
 
-        RestClient.RequestHeadersSpec mockHeadersSpec = mock(RestClient.RequestHeadersUriSpec.class);
-        when(mockUriSpec.uri("?street={street}&city={city}&state={state}&zip={zip}&benchmark=Public_AR_Current&format=json", 
-                addressRequest.street(), 
-                addressRequest.city(), 
-                addressRequest.state(), 
-                addressRequest.zip())).thenReturn(mockHeadersSpec);
+    when(mockResponseSpec.onStatus(any(), any())).thenReturn(mockResponseSpec);
 
-        RestClient.ResponseSpec mockResponseSpec = mock(RestClient.ResponseSpec.class);
-        when(mockHeadersSpec.retrieve()).thenReturn(mockResponseSpec);
-        
-        when(mockResponseSpec.onStatus(any(), any())).thenReturn(mockResponseSpec);
+    when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
 
-        when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
-    
-        CensusApiResponse actualResponse = censusApiService.submitAddress(addressRequest);
+    CensusApiResponse actualResponse = censusApiService.submitAddress(successfulRequest);
 
-        assertEquals(expectedResponse, actualResponse);
-    }
+    assertEquals(expectedResponse, actualResponse);
+  }
+
+  @Test
+  void missingParamRequestTest() {
+    AddressRequest addressRequest = new AddressRequest("", "New York", "New York", "10001");
+    AddressMatchResponse expectedAddressMatch = new AddressMatchResponse(
+        "400 BAD_REQUEST: Street address cannot be empty and cannot exceed 100 characters, Specify House number and Street name along with City and State and/or ZIP Code");
+    ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
+    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
+
+    RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
+    when(mockClient.get()).thenReturn(mockUriSpec);
+
+    RestClient.RequestHeadersSpec mockHeadersSpec = mock(RestClient.RequestHeadersUriSpec.class);
+    when(mockUriSpec.uri("?street={street}&city={city}&state={state}&zip={zip}&benchmark=Public_AR_Current&format=json",
+        addressRequest.street(),
+        addressRequest.city(),
+        addressRequest.state(),
+        addressRequest.zip())).thenReturn(mockHeadersSpec);
+
+    RestClient.ResponseSpec mockResponseSpec = mock(RestClient.ResponseSpec.class);
+    when(mockHeadersSpec.retrieve()).thenReturn(mockResponseSpec);
+
+    when(mockResponseSpec.onStatus(any(), any())).thenReturn(mockResponseSpec);
+
+    when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
+
+    CensusApiResponse actualResponse = censusApiService.submitAddress(addressRequest);
+
+    assertEquals(expectedResponse, actualResponse);
+  }
 }
