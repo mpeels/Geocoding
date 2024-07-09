@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.example.geocoder.request.AddressRequest;
+import com.example.geocoder.requests.AddressRequest;
 import com.example.geocoder.responses.AddressMatchResponse;
 import com.example.geocoder.responses.CensusApiResponse;
 import com.example.geocoder.responses.ResultResponse;

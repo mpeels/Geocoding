@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestClient;
 
-import com.example.geocoder.request.AddressRequest;
+import com.example.geocoder.requests.AddressRequest;
 import com.example.geocoder.responses.AddressMatchResponse;
 import com.example.geocoder.responses.CensusApiResponse;
 import com.example.geocoder.responses.CoordinatesResponse;
@@ -20,7 +20,7 @@ import com.example.geocoder.responses.ResultResponse;
 import com.example.geocoder.services.CensusApiService;
 
 @ExtendWith(MockitoExtension.class)
-public class CensusServiceTests {
+class CensusServiceTests {
   @Mock
   private RestClient mockClient;
 
