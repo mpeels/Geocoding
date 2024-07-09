@@ -1,14 +1,14 @@
 {
-    "configurations": [
-        {
-            "type": "java",
-            "name": "Spring Boot-GeocoderApplication<Geocoder>",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "mainClass": "com.example.Geocoder.GeocoderApplication",
-            "projectName": "Geocoder",
-            "args": "",
-            "envFile": "${workspaceFolder}/.env"
-        }
-    ]
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-GeocoderApplication<Geocoder>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.example.geocoder.GeocoderApplication",
+      "projectName": "Geocoder",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
 }
