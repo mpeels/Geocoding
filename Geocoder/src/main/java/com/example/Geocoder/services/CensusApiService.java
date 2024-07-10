@@ -1,5 +1,6 @@
 package com.example.Geocoder.services;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -31,6 +32,7 @@ public class CensusApiService {
     }
 
     /**Makes API request call with crafted uri from Address object. Returned as response.*/
+    @Cacheable("censusApiResponseCache")    
     public CensusApiResponse submitAddress(AddressRequest addressRequests){
         // HttpStatusCode clientServerCode;
         final HttpStatusCode[] clientServerCode = new HttpStatusCode[1];
