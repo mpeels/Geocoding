@@ -5,3 +5,5 @@ spring:
             - "censusApiResponseCache"
         caffeine:
             spec: expireAfterWrite=24h
+
+            
