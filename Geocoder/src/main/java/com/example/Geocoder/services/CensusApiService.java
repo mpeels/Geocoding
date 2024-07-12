@@ -10,9 +10,6 @@ import com.example.geocoder.responses.AddressMatchResponse;
 import com.example.geocoder.responses.CensusApiResponse;
 import com.example.geocoder.responses.ResultResponse;
 
-import io.github.resilience4j.ratelimiter.RateLimiter;
-import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
-
 
 /**
  * The service layer for the Geocoder application. This class is responsible for
@@ -36,12 +33,10 @@ import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 public class CensusApiService {
 
   private final RestClient restClient;
-  private final RateLimiter rateLimiter;
 
   /** Initializies restClient for CensusService */
   public CensusApiService(RestClient restClient, RateLimiterRegistry rateLimiterRegistry) {
     this.restClient = restClient;
-    this.rateLimiter = rateLimiterRegistry.rateLimiter("censusApiRateLimiter");
   }
 
   /**
@@ -53,10 +48,6 @@ public class CensusApiService {
   @Cacheable("censusApiResponseCache")
   public CensusApiResponse submitAddress(AddressRequest addressRequests) {
   
-    if(!rateLimiter.acquirePermission()){
-      return rateLimitFallback();
-    }
-
     final HttpStatusCode[] clientServerCode = new HttpStatusCode[1];
 
     CensusApiResponse response = restClient.get()
@@ -83,13 +74,5 @@ public class CensusApiService {
     }
 
     return response;
-  }
-
-  public CensusApiResponse rateLimitFallback(){
-    System.out.println("Request limit has been reached!");
-    String error = "Rate limit exceeded. Please try again later.";
-    AddressMatchResponse addressMatch = new AddressMatchResponse(error);
-    ResultResponse result = new ResultResponse(addressMatch);
-    return new CensusApiResponse(result);
   }
 }
