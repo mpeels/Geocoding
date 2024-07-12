@@ -1,0 +1,9 @@
+spring:
+    cache:
+        type: caffeine
+        cache-names: 
+            - "censusApiResponseCache"
+        caffeine:
+            spec: expireAfterWrite=24h
+
+            

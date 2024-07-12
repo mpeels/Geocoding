@@ -1,5 +1,6 @@
 package com.example.geocoder.services;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -8,6 +9,7 @@ import com.example.geocoder.requests.AddressRequest;
 import com.example.geocoder.responses.AddressMatchResponse;
 import com.example.geocoder.responses.CensusApiResponse;
 import com.example.geocoder.responses.ResultResponse;
+
 
 /**
  * The service layer for the Geocoder application. This class is responsible for
@@ -33,7 +35,7 @@ public class CensusApiService {
   private final RestClient restClient;
 
   /** Initializies restClient for CensusService */
-  public CensusApiService(RestClient restClient) {
+  public CensusApiService(RestClient restClient, RateLimiterRegistry rateLimiterRegistry) {
     this.restClient = restClient;
   }
 
@@ -41,8 +43,11 @@ public class CensusApiService {
    * Makes API request call with crafted uri from Address object. Returned as
    * response.
    */
+  
+
+  @Cacheable("censusApiResponseCache")
   public CensusApiResponse submitAddress(AddressRequest addressRequests) {
-    // HttpStatusCode clientServerCode;
+  
     final HttpStatusCode[] clientServerCode = new HttpStatusCode[1];
 
     CensusApiResponse response = restClient.get()
