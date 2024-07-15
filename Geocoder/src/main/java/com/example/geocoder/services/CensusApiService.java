@@ -1,5 +1,6 @@
 package com.example.geocoder.services;
 
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -41,20 +42,17 @@ public class CensusApiService {
   /** Initializies restClient for CensusService */
   public CensusApiService(RestClient restClient, RateLimiterRegistry rateLimiterRegistry) {
     this.restClient = restClient;
-    this.rateLimiter = rateLimiterRegistry.rateLimiter("censusApiRateLimiter");
+    this.rateLimiter = rateLimiterRegistry.rateLimiter("censusApiLimiter");
   }
-
-  
 
   /**
    * Makes API request call with crafted uri from Address object. Returned as
    * response.
    */
-  
 
-  @Cacheable("censusApiResponseCache")
+  @Cacheable(value = "censusApiResponseCache", unless="#result.rateLimitPass == false")
   public CensusApiResponse submitAddress(AddressRequest addressRequests) {
-  
+
     if(!rateLimiter.acquirePermission()){
       return rateLimitFallback();
     }
@@ -73,25 +71,27 @@ public class CensusApiService {
         })
         .body(CensusApiResponse.class);
 
+
     if (clientServerCode[0] != null && clientServerCode[0].is4xxClientError()) {
       String error = clientServerCode[0].toString()
           + ": Street address cannot be empty and cannot exceed 100 characters, Specify House number and Street name along with City and State and/or ZIP Code";
       AddressMatchResponse addressMatch = new AddressMatchResponse(error);
       ResultResponse result = new ResultResponse(addressMatch);
 
-      return new CensusApiResponse(result);
-    } else if (response.result().addressMatches().isEmpty()) {
-      response.result().addressMatches().add(new AddressMatchResponse("Address not found"));
+      return new CensusApiResponse(result, true);
+    }
+    else if (response.getResult().addressMatches().isEmpty()) {
+      response.getResult().addressMatches().add(new AddressMatchResponse("Address not found"));
     }
 
+    response.setRateLimitPass(true);
     return response;
   }
 
   public CensusApiResponse rateLimitFallback(){
-    System.out.println("Request limit has been reached!");
     String error = "Rate limit exceeded. Please try again later.";
     AddressMatchResponse addressMatch = new AddressMatchResponse(error);
     ResultResponse result = new ResultResponse(addressMatch);
-    return new CensusApiResponse(result);
+    return new CensusApiResponse(result, false);
   }
 }

@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.geocoder.services.CensusApiService;
-import com.example.geocoder.responses.CensusApiResponse;
 import com.example.geocoder.requests.AddressRequest;
+import com.example.geocoder.responses.CensusApiResponse;
+import com.example.geocoder.services.CensusApiService;
 
 /**
  * The controller for the Gecoder API. This controller builds an instances of
