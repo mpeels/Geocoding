@@ -66,4 +66,15 @@ public class CensusApiService {
 
     return response;
   }
+
+  //Validate Request Function that validates the parameters
+  //Use for testing
+  void validateRequest(AddressRequest addressRequests){
+    if(addressRequests.street() == null || addressRequests.street().trim().equals("")){
+      //throw new MissingStreetException();
+    }
+    else if(addressRequests.zip() == null || addressRequests.zip().trim().equals("")){
+      //throw new MissingZipException();
+    }
+   }
 }
