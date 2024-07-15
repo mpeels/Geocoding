@@ -1,6 +1,5 @@
 package com.example.geocoder.services;
 
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
