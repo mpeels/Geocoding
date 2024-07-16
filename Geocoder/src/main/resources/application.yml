@@ -6,4 +6,10 @@ spring:
         caffeine:
             spec: expireAfterWrite=24h
 
-            
+resilience4j:
+    rateLimiter:
+        instances:
+            censusApiLimiter:
+                limit-for-period: 1000
+                limit-refresh-period: 1s
+                timeout-duration: 30ms
