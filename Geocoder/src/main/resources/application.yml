@@ -10,6 +10,6 @@ resilience4j:
     rateLimiter:
         instances:
             censusApiLimiter:
-                limit-for-period: 1
-                limit-refresh-period: 30s
+                limit-for-period: 1000
+                limit-refresh-period: 1s
                 timeout-duration: 30ms

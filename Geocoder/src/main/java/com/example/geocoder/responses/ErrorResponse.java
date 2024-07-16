@@ -1,5 +1,3 @@
 package com.example.geocoder.responses;
 
-public record ErrorResponse(String error) {
-    
-}
+public record ErrorResponse(String error) {}

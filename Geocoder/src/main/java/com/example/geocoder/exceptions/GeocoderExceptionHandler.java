@@ -14,9 +14,18 @@ public class GeocoderExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.TOO_MANY_REQUESTS);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeExceptions(){
-        return new ResponseEntity<>(new ErrorResponse("This is a generic Runtime Exception Placeholder. FIX THIS!"), HttpStatus.NOT_IMPLEMENTED);
+    @ExceptionHandler(MissingStreetException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParametersExceptions(Exception e){
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
-    
+
+    @ExceptionHandler(InvalidAddressException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAddressExceptions(Exception e){
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingZipOrCityStateException.class)
+    public ResponseEntity<ErrorResponse> handleMissingZipOrCityStateExceptions(Exception e){
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }

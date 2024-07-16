@@ -33,7 +33,7 @@ class CensusServiceTests {
 
     AddressMatchResponse expectedAddressMatch = new AddressMatchResponse("Address Not Found");
     ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
-    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult, true);
+    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
 
     RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
     when(mockClient.get()).thenReturn(mockUriSpec);
@@ -65,7 +65,7 @@ class CensusServiceTests {
     AddressMatchResponse expectedAddressMatch = new AddressMatchResponse("20 W 34TH ST, NEW YORK, NY, 10118",
         coordinates);
     ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
-    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult, true);
+    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
 
     RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
     when(mockClient.get()).thenReturn(mockUriSpec);
@@ -95,7 +95,7 @@ class CensusServiceTests {
     AddressMatchResponse expectedAddressMatch = new AddressMatchResponse(
         "400 BAD_REQUEST: Street address cannot be empty and cannot exceed 100 characters, Specify House number and Street name along with City and State and/or ZIP Code");
     ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
-    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult, true);
+    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
 
     RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
     when(mockClient.get()).thenReturn(mockUriSpec);

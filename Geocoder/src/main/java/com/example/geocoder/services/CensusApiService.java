@@ -1,11 +1,12 @@
 package com.example.geocoder.services;
 
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.example.geocoder.exceptions.RateLimitExceededException;
+import com.example.geocoder.exceptions.InvalidAddressException;
+import com.example.geocoder.exceptions.MissingStreetException;
+import com.example.geocoder.exceptions.MissingZipOrCityStateException;
 import com.example.geocoder.requests.AddressRequest;
 import com.example.geocoder.responses.CensusApiResponse;
 
@@ -39,12 +40,12 @@ public class CensusApiService {
 
   /**
    * Makes API request call with crafted uri from Address object. Returned as
-   * response.
+   * Census API Response object.
    */
 
   @Cacheable("censusApiResponseCache")
   public CensusApiResponse submitAddress(AddressRequest addressRequests) {
-    //check the addres parameters
+    validateRequest(addressRequests);
 
     CensusApiResponse response = restClient.get()
         .uri("?street={street}&city={city}&state={state}&zip={zip}&benchmark=Public_AR_Current&format=json",
@@ -53,28 +54,28 @@ public class CensusApiService {
             addressRequests.state(),
             addressRequests.zip())
         .retrieve()
-        .onStatus(HttpStatusCode::is4xxClientError, (request, result) -> {
-          throw new RuntimeException(); //Placeholder
-        })
         .body(CensusApiResponse.class);
-
-
     
     if (response.result().addressMatches().isEmpty()) {
-      throw new RuntimeException(); //Placeholder
+      throw new InvalidAddressException(); //Placeholder
     }
-
     return response;
   }
 
-  //Validate Request Function that validates the parameters
-  //Use for testing
+  //Validate Request parameters before api call
   void validateRequest(AddressRequest addressRequests){
-    if(addressRequests.street() == null || addressRequests.street().trim().equals("")){
-      //throw new MissingStreetException();
+    String street = addressRequests.street();
+    String city = addressRequests.city();
+    String state = addressRequests.state();
+    String zip = addressRequests.zip();
+
+    if(street == null || street.trim().equals("")){
+      throw new MissingStreetException();
     }
-    else if(addressRequests.zip() == null || addressRequests.zip().trim().equals("")){
-      //throw new MissingZipException();
+    else if(zip == null || zip.trim().equals("") && 
+    (city == null || city.trim().equals("") ||
+     state == null || state.trim().equals(""))){
+      throw new MissingZipOrCityStateException();
     }
    }
 }

@@ -35,7 +35,6 @@ import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
  * @param address
  */
 
- //Migrate rate limiting to controller
 @RestController
 @RequestMapping("/api/address")
 class GeocoderController {
@@ -57,6 +56,7 @@ class GeocoderController {
     if(!cache.getNativeCache().asMap().containsKey(addressRequest) && !rateLimiter.acquirePermission()){
       throw new RateLimitExceededException();
     }
+    
     return censusService.submitAddress(addressRequest);
   }
 }
