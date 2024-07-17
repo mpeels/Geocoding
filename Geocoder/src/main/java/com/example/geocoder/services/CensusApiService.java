@@ -56,13 +56,13 @@ public class CensusApiService {
         .body(CensusApiResponse.class);
     
     if (response.result().addressMatches().isEmpty()) {
-      throw new InvalidAddressException(); //Placeholder
+      throw new InvalidAddressException();
     }
     return response;
   }
 
-   //Validate Request parameters before api call
-   void validateRequest(AddressRequest addressRequests){
+   /**Validate Request parameters before api call*/
+  void validateRequest(AddressRequest addressRequests){
     String street = addressRequests.street();
     String city = addressRequests.city();
     String state = addressRequests.state();
@@ -73,8 +73,8 @@ public class CensusApiService {
     }
     else if(zip == null || zip.trim().equals("") && 
     (city == null || city.trim().equals("") ||
-     state == null || state.trim().equals(""))){
+      state == null || state.trim().equals(""))){
       throw new MissingZipOrCityStateException();
     }
-   }
+  }
 }

@@ -1,61 +1,37 @@
 package com.example.geocoder.services;
 
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestClient;
 
+import com.example.geocoder.exceptions.InvalidAddressException;
+import com.example.geocoder.exceptions.MissingStreetException;
+import com.example.geocoder.exceptions.MissingZipOrCityStateException;
 import com.example.geocoder.requests.AddressRequest;
 import com.example.geocoder.responses.AddressMatchResponse;
 import com.example.geocoder.responses.CensusApiResponse;
 import com.example.geocoder.responses.CoordinatesResponse;
 import com.example.geocoder.responses.ResultResponse;
-import com.example.geocoder.services.CensusApiService;
 
 @ExtendWith(MockitoExtension.class)
-class CensusServiceTests {
+class CensusApiServiceTests {
   @Mock
   private RestClient mockClient;
 
   @InjectMocks
   private CensusApiService censusApiService;
-
-  @Test
-  void submitAddressInvalidRequest() {
-    AddressRequest invalidRequest = new AddressRequest("Invalid", "Nowhere", "Don't", "Exist");
-
-    AddressMatchResponse expectedAddressMatch = new AddressMatchResponse("Address Not Found");
-    ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
-    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
-
-    RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
-    when(mockClient.get()).thenReturn(mockUriSpec);
-
-    RestClient.RequestHeadersSpec mockHeadersSpec = mock(RestClient.RequestHeadersSpec.class);
-    when(mockUriSpec.uri("?street={street}&city={city}&state={state}&zip={zip}&benchmark=Public_AR_Current&format=json",
-        invalidRequest.street(),
-        invalidRequest.city(),
-        invalidRequest.state(),
-        invalidRequest.zip())).thenReturn(mockHeadersSpec);
-
-    RestClient.ResponseSpec mockResponseSpec = mock(RestClient.ResponseSpec.class);
-    when(mockHeadersSpec.retrieve()).thenReturn(mockResponseSpec);
-
-    when(mockResponseSpec.onStatus(any(), any())).thenReturn(mockResponseSpec);
-
-    when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
-
-    CensusApiResponse actualResponse = censusApiService.submitAddress(invalidRequest);
-
-    assertEquals(expectedResponse, actualResponse);
-  }
 
   @Test
   void submitAddressSuccessfulReqeuest() {
@@ -80,8 +56,6 @@ class CensusServiceTests {
     RestClient.ResponseSpec mockResponseSpec = mock(RestClient.ResponseSpec.class);
     when(mockHeadersSpec.retrieve()).thenReturn(mockResponseSpec);
 
-    when(mockResponseSpec.onStatus(any(), any())).thenReturn(mockResponseSpec);
-
     when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
 
     CensusApiResponse actualResponse = censusApiService.submitAddress(successfulRequest);
@@ -90,32 +64,52 @@ class CensusServiceTests {
   }
 
   @Test
-  void missingParamRequestTest() {
-    AddressRequest addressRequest = new AddressRequest("", "New York", "New York", "10001");
-    AddressMatchResponse expectedAddressMatch = new AddressMatchResponse(
-        "400 BAD_REQUEST: Street address cannot be empty and cannot exceed 100 characters, Specify House number and Street name along with City and State and/or ZIP Code");
-    ResultResponse expectedResult = new ResultResponse(expectedAddressMatch);
-    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
+  void submitAddressInvalidRequest() {
+    AddressRequest invalidRequest = new AddressRequest("Invalid", "Nowhere", "Don't", "Exist");
 
+    ResultResponse expectedResult = new ResultResponse(Collections.emptyList());
+    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
+    
     RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
     when(mockClient.get()).thenReturn(mockUriSpec);
 
-    RestClient.RequestHeadersSpec mockHeadersSpec = mock(RestClient.RequestHeadersUriSpec.class);
+    RestClient.RequestHeadersSpec mockHeadersSpec = mock(RestClient.RequestHeadersSpec.class);
     when(mockUriSpec.uri("?street={street}&city={city}&state={state}&zip={zip}&benchmark=Public_AR_Current&format=json",
-        addressRequest.street(),
-        addressRequest.city(),
-        addressRequest.state(),
-        addressRequest.zip())).thenReturn(mockHeadersSpec);
+        invalidRequest.street(),
+        invalidRequest.city(),
+        invalidRequest.state(),
+        invalidRequest.zip())).thenReturn(mockHeadersSpec);
 
     RestClient.ResponseSpec mockResponseSpec = mock(RestClient.ResponseSpec.class);
     when(mockHeadersSpec.retrieve()).thenReturn(mockResponseSpec);
 
-    when(mockResponseSpec.onStatus(any(), any())).thenReturn(mockResponseSpec);
-
     when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
 
-    CensusApiResponse actualResponse = censusApiService.submitAddress(addressRequest);
+    assertThrows(InvalidAddressException.class, () -> censusApiService.submitAddress(invalidRequest));
 
-    assertEquals(expectedResponse, actualResponse);
+  }
+
+  @Test
+  void validateRequestMissingStreetTest() {
+    AddressRequest addressRequest = new AddressRequest("", "Anywhere", "Anywhere", "Anywhere");
+    assertThrows(MissingStreetException.class, () -> censusApiService.validateRequest(addressRequest));
+  }
+
+  @Test
+  void validateRequestMissingZipValidCityState(){
+    AddressRequest addressRequest = new AddressRequest("123 Main St", "AnyWhere", "Anywhere", "");
+    assertDoesNotThrow(() -> censusApiService.validateRequest(addressRequest));
+  }
+
+  @Test
+  void validateRequestMissingCityStateValidZip(){
+    AddressRequest addressRequest = new AddressRequest("123 Main St", "", "", "Anywhere");
+    assertDoesNotThrow(() -> censusApiService.validateRequest(addressRequest));
+  }
+
+  @Test
+  void validateRequestMissingCityStateZip(){
+    AddressRequest addressRequest = new AddressRequest("123 Main St", "", "", "");
+    assertThrows(MissingZipOrCityStateException.class, () -> censusApiService.validateRequest(addressRequest));
   }
 }
