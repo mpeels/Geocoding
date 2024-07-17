@@ -6,7 +6,7 @@ import org.springframework.web.client.RestClient;
 
 import com.example.geocoder.exceptions.InvalidAddressException;
 import com.example.geocoder.exceptions.MissingStreetException;
-import com.example.geocoder.exceptions.MissingZipOrCityStateException;
+import com.example.geocoder.exceptions.MissingZipAndCityStateException;
 import com.example.geocoder.requests.AddressRequest;
 import com.example.geocoder.responses.CensusApiResponse;
 
@@ -74,7 +74,7 @@ public class CensusApiService {
     else if(zip == null || zip.trim().equals("") && 
     (city == null || city.trim().equals("") ||
       state == null || state.trim().equals(""))){
-      throw new MissingZipOrCityStateException();
+      throw new MissingZipAndCityStateException();
     }
   }
 }

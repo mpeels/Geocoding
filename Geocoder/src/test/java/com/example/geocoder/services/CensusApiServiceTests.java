@@ -18,7 +18,7 @@ import org.springframework.web.client.RestClient;
 
 import com.example.geocoder.exceptions.InvalidAddressException;
 import com.example.geocoder.exceptions.MissingStreetException;
-import com.example.geocoder.exceptions.MissingZipOrCityStateException;
+import com.example.geocoder.exceptions.MissingZipAndCityStateException;
 import com.example.geocoder.requests.AddressRequest;
 import com.example.geocoder.responses.AddressMatchResponse;
 import com.example.geocoder.responses.CensusApiResponse;
@@ -86,7 +86,6 @@ class CensusApiServiceTests {
     when(mockResponseSpec.body(CensusApiResponse.class)).thenReturn(expectedResponse);
 
     assertThrows(InvalidAddressException.class, () -> censusApiService.submitAddress(invalidRequest));
-
   }
 
   @Test
@@ -110,6 +109,6 @@ class CensusApiServiceTests {
   @Test
   void validateRequestMissingCityStateZip(){
     AddressRequest addressRequest = new AddressRequest("123 Main St", "", "", "");
-    assertThrows(MissingZipOrCityStateException.class, () -> censusApiService.validateRequest(addressRequest));
+    assertThrows(MissingZipAndCityStateException.class, () -> censusApiService.validateRequest(addressRequest));
   }
 }

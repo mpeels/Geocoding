@@ -14,8 +14,8 @@ public class GeocoderExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.TOO_MANY_REQUESTS);
     }
 
-    @ExceptionHandler(MissingZipOrCityStateException.class)
-    public ResponseEntity<ErrorResponse> handleMissingZipOrCityStateExceptions(Exception e){
+    @ExceptionHandler(MissingZipAndCityStateException.class)
+    public ResponseEntity<ErrorResponse> handleMissingZipAndCityStateExceptions(Exception e){
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
     
