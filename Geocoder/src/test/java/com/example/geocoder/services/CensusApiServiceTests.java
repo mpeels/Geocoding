@@ -68,7 +68,7 @@ class CensusApiServiceTests {
     AddressRequest invalidRequest = new AddressRequest("Invalid", "Nowhere", "Don't", "Exist");
 
     ResultResponse expectedResult = new ResultResponse(Collections.emptyList());
-    CensusApiResponse expectedResponse = new CensusApiResponse(expectedResult);
+    CensusApiResponse expectedResponse = new CensusApiResponse(null);
     
     RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
     when(mockClient.get()).thenReturn(mockUriSpec);
