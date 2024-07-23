@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+target/cucumber-report.html
+target/cucumber-report.json
