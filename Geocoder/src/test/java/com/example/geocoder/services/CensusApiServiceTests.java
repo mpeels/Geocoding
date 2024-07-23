@@ -1,12 +1,8 @@
 package com.example.geocoder.services;
 
-import java.util.Collections;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -66,8 +62,7 @@ class CensusApiServiceTests {
   @Test
   void submitAddressInvalidRequest() {
     AddressRequest invalidRequest = new AddressRequest("Invalid", "Nowhere", "Don't", "Exist");
-
-    ResultResponse expectedResult = new ResultResponse(Collections.emptyList());
+    
     CensusApiResponse expectedResponse = new CensusApiResponse(null);
     
     RestClient.RequestHeadersUriSpec mockUriSpec = mock(RestClient.RequestHeadersUriSpec.class);
