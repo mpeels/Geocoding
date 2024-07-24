@@ -2,8 +2,6 @@ package com.example.geocoder.controllers;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,25 +43,21 @@ class GeocoderController {
   private final RateLimiter rateLimiter;
   private final CacheManager cacheManager;
 
-  public GeocoderController(CensusApiService censusService, RateLimiterRegistry rateLimiterRegistry, CacheManager cacheManager) {
+  public GeocoderController(CensusApiService censusService, RateLimiterRegistry rateLimiterRegistry,
+      CacheManager cacheManager) {
     this.censusService = censusService;
     this.rateLimiter = rateLimiterRegistry.rateLimiter("censusApiLimiter");
     this.cacheManager = cacheManager;
   }
 
-  @GetMapping("/health")
-  public ResponseEntity<String> healthCheck(){
-    return ResponseEntity.ok("Yes, this application is still alive!");
-  }
-
   @PostMapping("/submittedAddress/request")
   public CensusApiResponse submittedAddress(@RequestBody AddressRequest addressRequest) {
-    CaffeineCache cache = (CaffeineCache)cacheManager.getCache("censusApiResponseCache");
+    CaffeineCache cache = (CaffeineCache) cacheManager.getCache("censusApiResponseCache");
 
-    if(!cache.getNativeCache().asMap().containsKey(addressRequest) && !rateLimiter.acquirePermission()){
+    if (!cache.getNativeCache().asMap().containsKey(addressRequest) && !rateLimiter.acquirePermission()) {
       throw new RateLimitExceededException();
     }
-    
+
     return censusService.submitAddress(addressRequest);
   }
 }
