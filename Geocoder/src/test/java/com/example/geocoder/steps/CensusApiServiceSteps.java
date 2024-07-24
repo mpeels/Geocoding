@@ -53,7 +53,6 @@ public class CensusApiServiceSteps extends CucumberContextConfig {
     @Given("the application is running")
     public void applicationIsRunning() throws Exception {
         AddressRequest address = new AddressRequest("1600 Pennsylvania Ave", "Washington", "DC", "20500"); 
-        System.out.println(address); 
         mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .get("/api/address/health")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -73,8 +72,6 @@ public class CensusApiServiceSteps extends CucumberContextConfig {
     
     @Then("the response status should be {int}")
     public void responseStatusShouldBe200(int status) throws Exception {
-        String response = mvcResult.getResponse().getContentAsString();
-        System.out.println(response);
         assertThat(mvcResult.getResponse().getStatus()).isEqualTo(status);
     }
 
