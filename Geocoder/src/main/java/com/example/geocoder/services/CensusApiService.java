@@ -55,7 +55,7 @@ public class CensusApiService {
         .retrieve()
         .body(CensusApiResponse.class);
     
-    if (response.result().addressMatches().isEmpty()) {
+    if (response.result() == null || response.result().addressMatches().isEmpty()) {
       throw new InvalidAddressException();
     }
     return response;
