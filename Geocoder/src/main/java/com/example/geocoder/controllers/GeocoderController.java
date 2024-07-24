@@ -2,6 +2,8 @@ package com.example.geocoder.controllers;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +51,12 @@ class GeocoderController {
     this.cacheManager = cacheManager;
   }
 
-  @PostMapping
+  @GetMapping("/health")
+  public ResponseEntity<String> healthCheck(){
+    return ResponseEntity.ok("Yes, this application is still alive!");
+  }
+
+  @PostMapping("/submittedAddress/request")
   public CensusApiResponse submittedAddress(@RequestBody AddressRequest addressRequest) {
     CaffeineCache cache = (CaffeineCache)cacheManager.getCache("censusApiResponseCache");
 
