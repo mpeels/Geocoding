@@ -2,7 +2,6 @@ package com.example.geocoder.steps;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,17 +34,8 @@ public class CensusApiServiceSteps extends CucumberContextConfig {
     private MvcResult mvcResult;
     private AddressRequest addressRequest;
 
-    @Given("the application is running")
-    public void applicationIsRunning() throws Exception {
-        mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .get("/api/address/health")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-    }
-
     @Given("an address request with street {string}, city {string}, state {string}, and zip {string}")
-    public void invalidAddressRequest(String street, String city, String state, String zip) {
+    public void addressRequest(String street, String city, String state, String zip) {
         addressRequest = new AddressRequest(street, city, state, zip);
     }
 
@@ -73,7 +63,7 @@ public class CensusApiServiceSteps extends CucumberContextConfig {
     }
 
     @Then("the response content should be an error")
-    public void responseIserror() throws Exception {
+    public void responseIsError() throws Exception {
         ErrorResponse response = mapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
                 ErrorResponse.class);
